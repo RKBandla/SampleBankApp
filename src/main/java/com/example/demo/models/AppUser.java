@@ -11,14 +11,20 @@ public class AppUser {
 
     private String username;
 
-    private String password; // stored as a BCrypt hash, never plain text
+    private String password;     // stored as a BCrypt hash, never plain text
+
+    private Role role;           // ADMIN or CUSTOMER
+
+    private String customerId;   // which Customer this login belongs to (null for admin)
 
     public AppUser() {
     }
 
-    public AppUser(String username, String password) {
+    public AppUser(String username, String password, Role role, String customerId) {
         this.username = username;
         this.password = password;
+        this.role = role;
+        this.customerId = customerId;
     }
 
     public String getId() {
@@ -43,5 +49,21 @@ public class AppUser {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 }

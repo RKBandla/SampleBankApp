@@ -8,6 +8,10 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.example.demo.models.AppUser;
+import com.example.demo.models.Role;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -24,26 +28,33 @@ public class JwtUtil {
 		this.expirationMs = expirationMs;
 	}
 
-	// Create a signed token that says "this is <username>", valid for expirationMs
-	public String generateToken(String username) {
+	// The server creates the token. The role is put INSIDE the token,
+	// so there are two kinds: AdminToken (role=ADMIN) and CustomerToken (role=CUSTOMER).
+	public String generateToken(AppUser user) {
 		Date now = new Date();
-		return Jwts.builder()
-				.subject(username)
+		var builder = Jwts.builder()
+				.subject(user.getUsername())
+				.claim("role", user.getRole().name())
+				.claim("tokenType", user.getRole() == Role.ADMIN ? "AdminToken" : "CustomerToken")
 				.issuedAt(now)
-				.expiration(new Date(now.getTime() + expirationMs))
-				.signWith(key)
-				.compact();
+				.expiration(new Date(now.getTime() + expirationMs));
+		if (user.getCustomerId() != null) {
+			builder.claim("customerId", user.getCustomerId());
+		}
+		return builder.signWith(key).compact();
 	}
 
-	// Returns the username if the token is valid, otherwise null (bad signature, expired, garbage)
-	public String extractUsername(String token) {
+	// Returns who the token belongs to, or null if it's invalid/expired/tampered
+	public AuthUser parse(String token) {
 		try {
-			return Jwts.parser()
+			Claims claims = Jwts.parser()
 					.verifyWith(key)
 					.build()
 					.parseSignedClaims(token)
-					.getPayload()
-					.getSubject();
+					.getPayload();
+			return new AuthUser(claims.getSubject(),
+					claims.get("role", String.class),
+					claims.get("customerId", String.class));
 		} catch (JwtException | IllegalArgumentException e) {
 			return null;
 		}

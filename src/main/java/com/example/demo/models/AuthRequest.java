@@ -1,11 +1,18 @@
 package com.example.demo.models;
 
 // Body for /api/auth/register and /api/auth/login
+// (firstName, lastName, email are only used when registering)
 public class AuthRequest {
 
     private String username;
 
     private String password;
+
+    private String firstName;
+
+    private String lastName;
+
+    private String email;
 
     public String getUsername() {
         return username;
@@ -21,5 +28,29 @@ public class AuthRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

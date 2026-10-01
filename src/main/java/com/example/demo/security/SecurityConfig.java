@@ -24,17 +24,22 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
-			.csrf(csrf -> csrf.disable())                 // not needed for a token-based REST API
-			.cors(Customizer.withDefaults())              // keep @CrossOrigin working
+			.csrf(csrf -> csrf.disable())
+			.cors(Customizer.withDefaults())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
-				.requestMatchers("/api/auth/**").permitAll()   // register + login are open
-				.anyRequest().authenticated())                 // everything else needs a token
-			.exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, e) -> {
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				response.setContentType("application/json");
-				response.getWriter().write("{\"error\":\"Unauthorized - missing or invalid token\"}");
-			}))
+				.requestMatchers("/api/auth/**").permitAll()                                   // register + login
+				.requestMatchers("/api/admin", "/api/admin/**").hasRole("ADMIN")                // Admin Dashboard
+				.requestMatchers("/api/customers", "/api/customers/**").hasRole("ADMIN")        // customer CRUD
+				.requestMatchers("/api/customerDashboard/**").hasRole("CUSTOMER")               // own dashboard
+				.anyRequest().authenticated())
+			.exceptionHandling(ex -> ex
+				// no token / bad token → 401
+				.authenticationEntryPoint((request, response, e) ->
+					writeError(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized - missing or invalid token"))
+				// valid token but wrong role (e.g. customer → /api/admin) → 403
+				.accessDeniedHandler((request, response, e) ->
+					writeError(response, HttpServletResponse.SC_FORBIDDEN, "Forbidden - you do not have access to this resource")))
 			.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
@@ -43,5 +48,11 @@ public class SecurityConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	private static void writeError(HttpServletResponse response, int status, String message) throws java.io.IOException {
+		response.setStatus(status);
+		response.setContentType("application/json");
+		response.getWriter().write("{\"error\":\"" + message + "\"}");
 	}
 }

@@ -26,24 +26,24 @@ public class AuthController {
 		this.authService = authService;
 	}
 
+	// Body: {"username","password","firstName","lastName","email"}
 	@PostMapping("/auth/register") // http://localhost:8080/api/auth/register
 	public ResponseEntity<Map<String, String>> register(@RequestBody AuthRequest request) {
 		if (isBlank(request.getUsername()) || isBlank(request.getPassword())) {
 			return ResponseEntity.badRequest().body(Map.of("error", "username and password are required"));
 		}
-		if (!authService.register(request.getUsername(), request.getPassword())) {
-			return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", "Username already exists"));
-		}
+		authService.register(request);   // 'admin' → 400, taken → 409 (see ApiExceptionHandler)
 		return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "User registered"));
 	}
 
+	// Same login for admin and customers; the returned token says which one you are
 	@PostMapping("/auth/login") // http://localhost:8080/api/auth/login
-	public ResponseEntity<Map<String, String>> login(@RequestBody AuthRequest request) {
-		String token = authService.login(request.getUsername(), request.getPassword());
-		if (token == null) {
+	public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+		Map<String, Object> result = authService.login(request.getUsername(), request.getPassword());
+		if (result == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "Invalid username or password"));
 		}
-		return ResponseEntity.ok(Map.of("token", token));
+		return ResponseEntity.ok(result);
 	}
 
 	private boolean isBlank(String s) {

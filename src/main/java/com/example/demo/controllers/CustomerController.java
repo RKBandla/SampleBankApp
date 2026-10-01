@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.models.Customer;
+import com.example.demo.models.CustomerView;
 import com.example.demo.services.CustomerService;
 
+// ADMIN ONLY (see SecurityConfig): manage all customers
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api")
@@ -31,13 +34,25 @@ public class CustomerController {
 	}
 
 	@GetMapping("/customers") // http://localhost:8080/api/customers
-	public List<Customer> getAllCustomers() {
+	public List<CustomerView> getAllCustomers() {
 		return customerService.getAllCustomers();
 	}
 
+	// Search: /api/customers/search?firstName=ro
+	@GetMapping("/customers/search")
+	public List<CustomerView> findCustomerByFirstName(@RequestParam(defaultValue = "") String firstName) {
+		return customerService.findByFirstName(firstName);
+	}
+
+	// Filter: customers with total balance >= 10,000
+	@GetMapping("/customers/premium")
+	public List<CustomerView> getPremiumCustomers() {
+		return customerService.getPremiumCustomers();
+	}
+
 	@GetMapping("/customers/{id}")
-	public ResponseEntity<Customer> getCustomerById(@PathVariable String id) {
-		Customer customer = customerService.getCustomerById(id);
+	public ResponseEntity<CustomerView> getCustomerById(@PathVariable String id) {
+		CustomerView customer = customerService.getCustomerById(id);
 		if (customer == null) {
 			return ResponseEntity.notFound().build();
 		}
@@ -45,14 +60,14 @@ public class CustomerController {
 	}
 
 	@PostMapping("/customers")
-	public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
-		Customer created = customerService.createCustomer(customer);
+	public ResponseEntity<CustomerView> createCustomer(@RequestBody Customer customer) {
+		CustomerView created = customerService.createCustomer(customer);
 		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}
 
 	@PutMapping("/customers/{id}")
-	public ResponseEntity<Customer> updateCustomer(@PathVariable String id, @RequestBody Customer customer) {
-		Customer updated = customerService.updateCustomer(id, customer);
+	public ResponseEntity<CustomerView> updateCustomer(@PathVariable String id, @RequestBody Customer customer) {
+		CustomerView updated = customerService.updateCustomer(id, customer);
 		if (updated == null) {
 			return ResponseEntity.notFound().build();
 		}
