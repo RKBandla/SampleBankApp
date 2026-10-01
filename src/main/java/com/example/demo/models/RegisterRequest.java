@@ -1,17 +1,21 @@
 package com.example.demo.models;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-@Document(collection = "customers")
-public class Customer {
+// Body for POST /api/auth/register. The annotations are checked automatically because of @Valid.
+public class RegisterRequest {
 
-    @Id
-    private String id;
+    @NotBlank(message = "username is required")
+    @Pattern(regexp = "^[A-Za-z0-9._-]{3,20}$",
+             message = "username must be 3-20 letters, numbers, dots, dashes or underscores")
+    private String username;
+
+    @NotBlank(message = "password is required")
+    @Size(min = 8, max = 64, message = "password must be at least 8 characters")
+    private String password;
 
     @NotBlank(message = "firstName is required")
     @Size(max = 50, message = "firstName is too long")
@@ -23,22 +27,20 @@ public class Customer {
     @Email(message = "email is not valid")
     private String email;
 
-    public Customer() {
+    public String getUsername() {
+        return username;
     }
 
-    public Customer(String id, String firstName, String lastName, String email) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getId() {
-        return id;
+    public String getPassword() {
+        return password;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {

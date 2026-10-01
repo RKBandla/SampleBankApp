@@ -29,6 +29,7 @@ public class SecurityConfig {
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers("/api/auth/**").permitAll()                                   // register + login
+				.requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()  // Swagger UI
 				.requestMatchers("/api/admin", "/api/admin/**").hasRole("ADMIN")                // Admin Dashboard
 				.requestMatchers("/api/customers", "/api/customers/**").hasRole("ADMIN")        // customer CRUD
 				.requestMatchers("/api/customerDashboard/**").hasRole("CUSTOMER")               // own dashboard

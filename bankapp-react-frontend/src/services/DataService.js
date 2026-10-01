@@ -69,5 +69,7 @@ export const deleteCustomer = (id) => request('DELETE', `/api/customers/${id}`)
 export const getCustomerDashboard = (id) => request('GET', `/api/customerDashboard/${id}`)
 export const deposit = (id, accountId, amount) =>
   request('POST', `/api/customerDashboard/${id}/deposit`, { accountId, amount })
+export const withdraw = (id, accountId, amount) =>
+  request('POST', `/api/customerDashboard/${id}/withdraw`, { accountId, amount })
 export const transfer = (id, fromAccountId, toAccountId, amount) =>
   request('POST', `/api/customerDashboard/${id}/transfer`, { fromAccountId, toAccountId, amount })

@@ -54,6 +54,20 @@ public class AccountService {
        return account;
    }
 
+   public Account withdraw(String customerId, String accountId, BigDecimal amount) {
+       checkAmount(amount);
+       Account account = getOwnAccount(customerId, accountId);
+       if (account.getBalance().compareTo(amount) < 0) {
+           throw new IllegalArgumentException("Insufficient funds. Available: " + account.getBalance());
+       }
+
+       account.setBalance(account.getBalance().subtract(amount));
+       accountRepository.save(account);
+       transactionRepository.save(new Transaction(customerId, accountId, null,
+               TransactionType.WITHDRAW, amount, account.getBalance()));
+       return account;
+   }
+
    // @Transactional: both balance updates succeed together, or neither happens
    @Transactional
    public Account transfer(String customerId, String fromAccountId, String toAccountId, BigDecimal amount) {

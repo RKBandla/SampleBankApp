@@ -1,7 +1,7 @@
 import EmptyState from '../common/EmptyState.jsx'
 import { formatMoney, formatDate, shortId } from '../../services/format.js'
 
-const LABELS = { DEPOSIT: 'Deposit', TRANSFER_IN: 'Transfer in', TRANSFER_OUT: 'Transfer out' }
+const LABELS = { DEPOSIT: 'Deposit', WITHDRAW: 'Withdrawal', TRANSFER_IN: 'Transfer in', TRANSFER_OUT: 'Transfer out' }
 
 export default function TransactionList({ transactions }) {
   return (
@@ -12,7 +12,7 @@ export default function TransactionList({ transactions }) {
       ) : (
         <ul className="tx-list">
           {transactions.map((t) => {
-            const isOut = t.type === 'TRANSFER_OUT'
+            const isOut = t.type === 'TRANSFER_OUT' || t.type === 'WITHDRAW'
             return (
               <li key={t.id} className="fade-in">
                 <div>

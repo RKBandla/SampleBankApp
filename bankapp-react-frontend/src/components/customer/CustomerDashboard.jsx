@@ -4,7 +4,7 @@ import { formatMoney } from '../../services/format.js'
 import Spinner from '../common/Spinner.jsx'
 import ErrorMessage from '../common/ErrorMessage.jsx'
 import AccountCard from './AccountCard.jsx'
-import DepositForm from './DepositForm.jsx'
+import CashForm from './CashForm.jsx'
 import TransferForm from './TransferForm.jsx'
 import TransactionList from './TransactionList.jsx'
 
@@ -76,8 +76,8 @@ export default function CustomerDashboard({ customerId, notify, onSessionExpired
       </div>
 
       <div className="grid-2">
-        <DepositForm customerId={customerId} accounts={customer.accounts}
-                     onDone={handleDone} onError={(m) => notify('error', m)} />
+        <CashForm customerId={customerId} accounts={customer.accounts}
+                  onDone={handleDone} onError={(m) => notify('error', m)} />
         <TransferForm customerId={customerId} accounts={customer.accounts}
                       onDone={handleDone} onError={(m) => notify('error', m)} />
       </div>

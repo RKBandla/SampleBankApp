@@ -20,6 +20,8 @@ import com.example.demo.models.Customer;
 import com.example.demo.models.CustomerView;
 import com.example.demo.services.CustomerService;
 
+import jakarta.validation.Valid;
+
 // ADMIN ONLY (see SecurityConfig): manage all customers
 @CrossOrigin(origins = "*")
 @RestController
@@ -60,13 +62,13 @@ public class CustomerController {
 	}
 
 	@PostMapping("/customers")
-	public ResponseEntity<CustomerView> createCustomer(@RequestBody Customer customer) {
+	public ResponseEntity<CustomerView> createCustomer(@Valid @RequestBody Customer customer) {
 		CustomerView created = customerService.createCustomer(customer);
 		return ResponseEntity.status(HttpStatus.CREATED).body(created);
 	}
 
 	@PutMapping("/customers/{id}")
-	public ResponseEntity<CustomerView> updateCustomer(@PathVariable String id, @RequestBody Customer customer) {
+	public ResponseEntity<CustomerView> updateCustomer(@PathVariable String id, @Valid @RequestBody Customer customer) {
 		CustomerView updated = customerService.updateCustomer(id, customer);
 		if (updated == null) {
 			return ResponseEntity.notFound().build();

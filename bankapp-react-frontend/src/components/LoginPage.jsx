@@ -77,16 +77,20 @@ export default function LoginPage({ mode, onModeChange, onLogin, notify }) {
           )}
 
           <input name="username" placeholder="Username" value={form.username} onChange={handleChange}
-                 autoComplete="username" required />
+                 autoComplete="username" required
+                 {...(isRegister && { pattern: '[A-Za-z0-9._\\-]{3,20}', title: '3-20 letters, numbers, . _ or -' })} />
 
           <div className="password-field">
             <input name="password" type={showPassword ? 'text' : 'password'} placeholder="Password"
                    value={form.password} onChange={handleChange}
-                   autoComplete={isRegister ? 'new-password' : 'current-password'} required />
+                   autoComplete={isRegister ? 'new-password' : 'current-password'} required
+                   minLength={isRegister ? 8 : undefined} />
             <button type="button" className="link small" onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? 'Hide' : 'Show'}
             </button>
           </div>
+
+          {isRegister && <p className="hint">Password: at least 8 characters</p>}
 
           <button type="submit" disabled={loading}>
             {loading ? <span className="btn-spinner" /> : isRegister ? 'Create account' : 'Login'}

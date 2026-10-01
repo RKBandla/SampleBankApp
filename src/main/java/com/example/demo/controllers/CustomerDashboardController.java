@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.models.CustomerView;
-import com.example.demo.models.DepositRequest;
+import com.example.demo.models.AmountRequest;
 import com.example.demo.models.TransferRequest;
 import com.example.demo.security.AuthUser;
 import com.example.demo.services.AccountService;
 import com.example.demo.services.CustomerService;
+
+import jakarta.validation.Valid;
 
 // CUSTOMER ONLY, and only for their OWN id
 @CrossOrigin(origins = "*")
@@ -54,7 +56,7 @@ public class CustomerDashboardController {
 	}
 
 	@PostMapping("/customerDashboard/{id}/deposit")
-	public ResponseEntity<?> deposit(@PathVariable String id, @RequestBody DepositRequest request,
+	public ResponseEntity<?> deposit(@PathVariable String id, @Valid @RequestBody AmountRequest request,
 									 @AuthenticationPrincipal AuthUser user) {
 		if (!isOwner(id, user)) {
 			return forbidden();
@@ -62,8 +64,17 @@ public class CustomerDashboardController {
 		return ResponseEntity.ok(accountService.deposit(id, request.getAccountId(), request.getAmount()));
 	}
 
+	@PostMapping("/customerDashboard/{id}/withdraw")
+	public ResponseEntity<?> withdraw(@PathVariable String id, @Valid @RequestBody AmountRequest request,
+									  @AuthenticationPrincipal AuthUser user) {
+		if (!isOwner(id, user)) {
+			return forbidden();
+		}
+		return ResponseEntity.ok(accountService.withdraw(id, request.getAccountId(), request.getAmount()));
+	}
+
 	@PostMapping("/customerDashboard/{id}/transfer")
-	public ResponseEntity<?> transfer(@PathVariable String id, @RequestBody TransferRequest request,
+	public ResponseEntity<?> transfer(@PathVariable String id, @Valid @RequestBody TransferRequest request,
 									  @AuthenticationPrincipal AuthUser user) {
 		if (!isOwner(id, user)) {
 			return forbidden();

@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.AppUser;
-import com.example.demo.models.AuthRequest;
+import com.example.demo.models.RegisterRequest;
 import com.example.demo.models.Customer;
 import com.example.demo.models.Role;
 import com.example.demo.repos.CustomerRepository;
@@ -37,7 +37,7 @@ public class AuthService {
 
    // Registration always creates a CUSTOMER (never an admin).
    // It also creates the Customer record and their Checking + Savings accounts.
-   public void register(AuthRequest request) {
+   public void register(RegisterRequest request) {
        String username = request.getUsername().trim();
        if (username.equalsIgnoreCase(RESERVED_ADMIN_USERNAME)) {
            throw new IllegalArgumentException("The username 'admin' is reserved");
