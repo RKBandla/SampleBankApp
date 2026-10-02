@@ -55,6 +55,12 @@
             <version>0.12.6</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- Runs this Spring Boot app inside AWS Lambda (behind API Gateway). Not used when running locally. -->
+        <dependency>
+            <groupId>com.amazonaws.serverless</groupId>
+            <artifactId>aws-serverless-java-container-springboot3</artifactId>
+            <version>2.0.3</version>
+        </dependency>
         <!-- Tests: JUnit 5 + Mockito + MockMvc (spring-boot-starter-test), security test helpers -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -75,4 +81,57 @@
             </plugin>
         </plugins>
     </build>
+
+    <!--
+        AWS Lambda package:  mvn clean package -P lambda -DskipTests
+        Creates target/bankapp-java-api-backend-0.0.1-SNAPSHOT-lambda.zip
+        (compiled classes at the root + every library in lib/, which is the layout Lambda's Java runtime expects).
+        Embedded Tomcat is left out because Lambda does not need a web server.
+    -->
+    <profiles>
+        <profile>
+            <id>lambda</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-dependencies</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <includeScope>runtime</includeScope>
+                                    <excludeGroupIds>org.apache.tomcat.embed</excludeGroupIds>
+                                    <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>lambda-zip</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <configuration>
+                                    <appendAssemblyId>true</appendAssemblyId>
+                                    <descriptors>
+                                        <descriptor>src/assembly/lambda.xml</descriptor>
+                                    </descriptors>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

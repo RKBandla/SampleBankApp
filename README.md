@@ -1,6 +1,8 @@
 # Sample Bank App
 
-A full-stack banking application: **Spring Boot REST API + MongoDB Atlas + JWT security + React frontend**.
+A full-stack banking application: **Spring Boot REST API + MongoDB Atlas + JWT security + React frontend**, deployable to **AWS (S3 + API Gateway + Lambda)**.
+
+**Live demo:** _add your S3 website link here after deploying_ (see [AWS deployment guide](docs/aws-deployment.md))
 
 Customers register, get a **Checking** and a **Savings** account, and can deposit, withdraw, transfer money and view their history.
 Admins see every customer, search and filter them, and manage them.
@@ -47,6 +49,7 @@ Admins see every customer, search and filter them, and manage them.
 | API docs | springdoc-openapi (Swagger UI) |
 | Tests | JUnit 5, Mockito, MockMvc |
 | Frontend | React 18, Vite |
+| Cloud | AWS S3 (static website), API Gateway HTTP API, AWS Lambda (aws-serverless-java-container) |
 
 ## Architecture
 
@@ -61,6 +64,18 @@ flowchart LR
 
 Every request goes **Controller → Service → Repository**. Security runs *before* the controllers as a filter.
 
+## Deploying to AWS
+
+```
+React on S3  ──►  API Gateway (HTTP API)  ──►  Lambda (this Spring Boot app)  ──►  MongoDB Atlas
+```
+
+- `StreamLambdaHandler` is the Lambda entry point (handler `com.example.demo.StreamLambdaHandler::handleRequest`).
+- `mvn clean package -P lambda -DskipTests` builds the upload zip.
+- The frontend reads the API Gateway URL from `VITE_API_BASE_URL` (`bankapp-react-frontend/.env.production`).
+
+Full click-by-click steps: **[docs/aws-deployment.md](docs/aws-deployment.md)**
+
 ## Project structure
 
 ```
@@ -71,11 +86,12 @@ src/main/java/com/example/demo
 ├── models        Customer, Account, Transaction, AppUser, Role, request bodies (with validation)
 ├── security      JwtUtil, JwtAuthFilter, SecurityConfig, AuthUser
 ├── config        MongoConfig (transactions), OpenApiConfig (Swagger), DataSeeder (admin + demo data)
+├── StreamLambdaHandler.java   AWS Lambda entry point
 └── exception     ApiExceptionHandler → {"error": "..."} responses
 src/test/java     AccountServiceTest, CustomerServiceTest, AuthServiceTest, JwtUtilTest, SecurityRulesTest
 bankapp-react-frontend/src
 ├── services      DataService.js (all API calls), format.js
-└── components    Header, Footer, WelcomePage, LoginPage, common/, admin/, customer/
+└── components    Header, Footer, WelcomePage, LoginPage, common/ (CreditCard, CardStack, Spinner...), admin/, customer/
 ```
 
 ---

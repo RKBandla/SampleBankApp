@@ -1,3 +1,5 @@
+import CardStack from './common/CardStack.jsx'
+
 // Welcome page: the first thing a visitor sees.
 // onNavigate is a callback from App (child -> parent).
 export default function WelcomePage({ onNavigate }) {
@@ -10,12 +12,16 @@ export default function WelcomePage({ onNavigate }) {
   return (
     <div className="welcome fade-in">
       <section className="hero">
-        <h1>Banking made simple.</h1>
-        <p>View balances, deposit, and transfer money — all in one place.</p>
-        <div className="hero-actions">
-          <button onClick={() => onNavigate('register')}>Get started</button>
-          <button className="ghost" onClick={() => onNavigate('login')}>I already have an account</button>
+        <div className="hero-text">
+          <span className="eyebrow">Online banking</span>
+          <h1>Banking made simple.</h1>
+          <p>View balances, deposit, withdraw and transfer money — all in one place.</p>
+          <div className="hero-actions">
+            <button onClick={() => onNavigate('register')}>Get started</button>
+            <button className="ghost" onClick={() => onNavigate('login')}>I already have an account</button>
+          </div>
         </div>
+        <CardStack />
       </section>
 
       <section className="features">

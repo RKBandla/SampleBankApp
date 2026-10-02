@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { login, register } from '../services/DataService.js'
+import CardStack from './common/CardStack.jsx'
 
 const EMPTY_FORM = { username: '', password: '', firstName: '', lastName: '', email: '' }
 
@@ -59,6 +60,17 @@ export default function LoginPage({ mode, onModeChange, onLogin, notify }) {
 
   return (
     <div className="auth-wrap">
+      <aside className="auth-visual slide-up">
+        <h2>{isRegister ? 'Your new cards are one step away' : 'Good to see you again'}</h2>
+        <p>Checking and Savings accounts, instant transfers and a full transaction history.</p>
+        <CardStack compact />
+        <ul className="perks">
+          <li>No monthly fees</li>
+          <li>Transfers in seconds</li>
+          <li>Bank-grade security (BCrypt + JWT)</li>
+        </ul>
+      </aside>
+
       <div className={`card auth-card slide-up ${shake ? 'shake' : ''} ${error ? 'has-error' : ''}`}>
         <h2>{isRegister ? 'Open an account' : 'Welcome back'}</h2>
         <p className="muted">

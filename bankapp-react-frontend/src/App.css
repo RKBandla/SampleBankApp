@@ -196,3 +196,90 @@ tbody tr:hover { background: #f7f9fc; }
 .tab { flex: 1; background: transparent; color: var(--muted); min-height: 34px; }
 .tab.active { background: #fff; color: var(--text); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12); font-weight: 600; }
 .hint { margin: -4px 0 0; font-size: 12px; color: var(--muted); }
+
+/* ---------- credit cards (Welcome + Login) ---------- */
+.cc {
+  width: 300px; aspect-ratio: 1.586; border-radius: 16px; padding: 18px 20px; color: #fff;
+  display: flex; flex-direction: column; justify-content: space-between;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.28); position: relative; overflow: hidden;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+.cc::after { /* soft shine */
+  content: ''; position: absolute; inset: -40% -10% auto auto; width: 70%; height: 140%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.22), transparent); transform: rotate(25deg); pointer-events: none;
+}
+.cc-blue { background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%); }
+.cc-green { background: linear-gradient(135deg, #059669 0%, #064e3b 100%); }
+.cc-gold { background: linear-gradient(135deg, #d4a24c 0%, #8a5a12 100%); }
+.cc-top { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+.cc-bank { display: flex; align-items: center; gap: 6px; font-weight: 700; letter-spacing: 0.02em; }
+.cc-logo { background: #fff; color: #1e3a8a; border-radius: 5px; padding: 1px 5px; font-size: 10px; }
+.cc-label { opacity: 0.85; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+.cc-middle { display: flex; align-items: center; gap: 10px; }
+.cc-contactless { opacity: 0.9; }
+.cc-number { font-size: 19px; letter-spacing: 0.12em; font-variant-numeric: tabular-nums; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
+.cc-bottom { display: flex; align-items: flex-end; gap: 18px; font-size: 12px; }
+.cc-bottom div { display: flex; flex-direction: column; gap: 2px; }
+.cc-bottom small { font-size: 9px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.08em; }
+.cc-network { margin-left: auto; font-weight: 800; font-style: italic; letter-spacing: 0.06em; opacity: 0.9; }
+
+.card-stack { position: relative; width: 380px; height: 300px; flex-shrink: 0; }
+.card-stack .cc { position: absolute; }
+.stack-back { top: 0; right: 0; transform: rotate(10deg); animation: float-b 7s ease-in-out infinite; }
+.stack-middle { top: 45px; right: 40px; transform: rotate(-4deg); animation: float-m 6s ease-in-out infinite; }
+.stack-front { top: 100px; right: 70px; transform: rotate(-12deg); animation: float-f 5s ease-in-out infinite; }
+@keyframes float-b { 0%, 100% { transform: rotate(10deg) translateY(0); } 50% { transform: rotate(11deg) translateY(-8px); } }
+@keyframes float-m { 0%, 100% { transform: rotate(-4deg) translateY(0); } 50% { transform: rotate(-3deg) translateY(-10px); } }
+@keyframes float-f { 0%, 100% { transform: rotate(-12deg) translateY(0); } 50% { transform: rotate(-11deg) translateY(-12px); } }
+
+.card-stack.compact { width: 330px; height: 250px; margin: 8px auto 4px; }
+.card-stack.compact .cc { width: 250px; padding: 14px 16px; }
+.card-stack.compact .cc-number { font-size: 15px; }
+.card-stack.compact .stack-middle { top: 38px; right: 30px; }
+.card-stack.compact .stack-front { top: 80px; right: 55px; }
+
+/* Welcome hero: text left, cards right */
+.hero { display: flex; align-items: center; justify-content: space-between; gap: 32px; text-align: left; padding: 40px 0 36px; }
+.hero-text { max-width: 470px; }
+.hero-actions { justify-content: flex-start; }
+.eyebrow { display: inline-block; font-size: 13px; font-weight: 600; color: var(--primary); background: #e0e9ff; padding: 4px 10px; border-radius: 999px; margin-bottom: 12px; }
+
+/* Login: card visual panel + form side by side */
+.auth-wrap { display: grid; grid-template-columns: 1.05fr 1fr; gap: 0; max-width: 900px; margin: 12px auto 0; align-items: stretch; }
+.auth-visual {
+  background: linear-gradient(160deg, #1e3a8a 0%, #172554 100%); color: #fff; border-radius: var(--radius) 0 0 var(--radius);
+  padding: 28px 28px 24px; display: flex; flex-direction: column; overflow: hidden;
+}
+.auth-visual h2 { font-size: 22px; margin-bottom: 6px; }
+.auth-visual p { margin: 0; opacity: 0.85; font-size: 14px; }
+.perks { list-style: none; padding: 0; margin: auto 0 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; }
+.perks li::before { content: '✓'; display: inline-block; width: 20px; color: #86efac; font-weight: 700; }
+.auth-wrap .auth-card { max-width: none; margin: 0; border-radius: 0 var(--radius) var(--radius) 0; display: flex; flex-direction: column; justify-content: center; }
+
+@media (max-width: 860px) {
+  .hero { flex-direction: column-reverse; text-align: center; padding-top: 16px; }
+  .hero-actions { justify-content: center; }
+  .card-stack { width: 320px; height: 250px; }
+  .card-stack .cc { width: 250px; padding: 14px 16px; }
+  .card-stack .cc-number { font-size: 15px; }
+  .stack-middle { top: 38px; right: 30px; }
+  .stack-front { top: 80px; right: 55px; }
+  .auth-wrap { grid-template-columns: 1fr; max-width: 440px; }
+  .auth-visual { border-radius: var(--radius) var(--radius) 0 0; padding: 20px 20px 12px; }
+  .auth-visual .perks { display: none; }
+  .auth-wrap .auth-card { border-radius: 0 0 var(--radius) var(--radius); }
+}
+@media (max-width: 380px) {
+  .card-stack, .card-stack.compact { transform: scale(0.85); transform-origin: top center; height: 215px; }
+}
+
+/* spacing fixes for the login card stack */
+.card-stack.compact { margin: 30px auto 14px; }
+.cc-bank, .cc-bottom span, .cc-label { white-space: nowrap; }
+@media (max-width: 860px) {
+  .card-stack.compact { width: 300px; height: 250px; margin: 22px auto -18px; transform: scale(0.9); transform-origin: top center; }
+  .card-stack.compact .cc { width: 250px; padding: 14px 16px; }
+  .card-stack.compact .cc-number { font-size: 15px; }
+  .card-stack.compact .stack-middle { top: 38px; right: 20px; }
+  .card-stack.compact .stack-front { top: 80px; right: 40px; }
+}

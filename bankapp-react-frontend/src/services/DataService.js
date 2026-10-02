@@ -3,6 +3,12 @@
 
 const SESSION_KEY = 'session'
 
+// Where the backend lives.
+//  - Locally: empty → calls go to /api/... and Vite forwards them to localhost:8080.
+//  - On AWS:  set VITE_API_BASE_URL (in .env.production) to your API Gateway URL,
+//             e.g. https://abc123.execute-api.us-east-1.amazonaws.com
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/+$/, '')
+
 // ---------- session (token + role) saved in the browser ----------
 export function getSession() {
   try {
@@ -22,7 +28,7 @@ async function request(method, url, body) {
 
   let response
   try {
-    response = await fetch(url, { method, headers, body: body ? JSON.stringify(body) : undefined })
+    response = await fetch(API_BASE + url, { method, headers, body: body ? JSON.stringify(body) : undefined })
   } catch {
     throw apiError(0, 'Cannot reach the server. Is the backend running?')
   }
